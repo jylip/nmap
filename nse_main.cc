@@ -20,6 +20,7 @@
 #include "nse_lpeg.h"
 #include "nse_libssh2.h"
 #include "nse_zlib.h"
+#include "nse_radamsa.h"
 
 #include <math.h>
 
@@ -555,6 +556,9 @@ static void set_nmap_libraries (lua_State *L)
 #endif
 #ifdef HAVE_LIBZ
     {NSE_ZLIBNAME, luaopen_zlib},
+#endif
+#ifdef HAVE_RADAMSA
+    {NSE_RADAMSANAME, luaopen_radamsa},
 #endif
     {NULL, NULL}
   };

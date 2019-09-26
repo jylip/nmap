@@ -237,6 +237,49 @@ if test $HAVE_PYTHON && test "x${PYTHON_VERSION%%.*}" = "x2"; then
     HAVE_PYTHON2=true
 fi
 
+# We test whether they specified radamsa desires explicitly
+use_radamsa="yes"
+specialradamsadir=""
+AC_ARG_WITH(radamsa, AC_HELP_STRING([--with-radamsa=DIR],[Use optional Radamsa lib from [DIR]/lib/ and headers from [DIR]/c/)]),
+[  case "$with_radamsa" in
+  yes)
+    ;;
+  no)
+    use_radamsa="no"
+    ;;
+  *)
+    specialradamsadir="$with_radamsa"
+    ac_configure_args="$ac_configure_args '--with-radamsa-prefix=$with_radamsa'"
+    CPPFLAGS="$CPPFLAGS -I$with_radamsa/c"
+    LDFLAGS="$LDFLAGS -L$with_radamsa/lib"
+    ;;
+  esac]
+)
+
+
+if test "$use_radamsa" = "yes"; then
+   AC_CHECK_LIB(radamsa, radamsa,
+    [ use_radamsa="yes" ],
+    [ use_radamsa="no" 
+    if test "$with_radamsa" = "yes"; then
+      AC_MSG_ERROR([Radamsa was explicitly requested but libradamsa was not found in given path.])
+    fi
+    AC_MSG_WARN([Failed to find libradamsa so Radamsa will not be used. If it is installed you can try the --with-radamsa=DIR argument]) ],
+    [ ])
+fi
+
+RADAMSA_LIBS=
+if test "$use_radamsa" = "yes"; then
+  trace_use="$trace_use radamsa"
+  AC_DEFINE(HAVE_RADAMSA, 1, [Have Radamsa library])
+  RADAMSA_LIBS="$with_radamsa/lib/libradamsa.a"
+  AC_MSG_WARN([Using radamsa, just checking])
+else
+  trace_no_use="$trace_no_use radamsa"
+fi
+
+AC_SUBST(RADAMSA_LIBS)
+
 NDIFFDIR=ndiff
 
 # Do they want Ndiff?

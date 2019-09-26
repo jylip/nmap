@@ -167,6 +167,10 @@ Comm = {
 
     -- We now have some data that came back from the connection, which
     -- the protocol guarantees will be the 4-byte CONNACK packet.
+    if response == nil then
+      return false, "Response is invalid, should be CONNACK packet."
+    end
+
     if #response ~= 4 then
       return false, "More bytes were returned from tryssl() than expected."
     end
@@ -304,7 +308,8 @@ Comm = {
     if #buf - pos + 1 < 1 then
       return false, "Failed to parse control packet."
     end
-    local type_and_flags, pos = string.unpack("B", buf, pos)
+    -- XXX: strings start at offset 1, which made this crash when pos argument is 0
+    local type_and_flags, pos = string.unpack("B", buf, pos+1)
 
     -- Parse the remaining length.
     local pos, length = MQTT.length_parse(buf, pos)
