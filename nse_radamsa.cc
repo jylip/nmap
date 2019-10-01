@@ -36,7 +36,6 @@ static int radamsa_radamsa(lua_State *L) {
 }
 
 LUALIB_API int luaopen_radamsa(lua_State *L) {
-    printf("luaopen_radamsa()\n");
     const luaL_Reg radamsa_funcs[] = {
         {"init", radamsa_init},
         {"radamsa", radamsa_radamsa},

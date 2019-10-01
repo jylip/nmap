@@ -157,7 +157,7 @@ Comm = {
 
     -- The MQTT protocol requires us to sent the initial CONNECT
     -- control packet before it will respond.
-    local sd, response, _, _ = comm.tryssl(self.host, self.port, pkt)
+    local sd, response, _, _ = comm.tryssl(self.host, self.port, pkt, self.options)
     if not sd then
       return false, response
     end
